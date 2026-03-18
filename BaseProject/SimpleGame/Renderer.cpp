@@ -51,16 +51,19 @@ void Renderer::CreateVertexBufferObjects()
 	float centerX = 0;
 	float centerY = 0;
 	float size = 0.1;
+	float mass = 1;
+	float vx = 0.5;
+	float vy = 1;
 	float triangle[]
 		=
 	{
-		centerX - size / 2, centerY - size / 2, 0,
-		centerX + size / 2, centerY - size / 2, 0,
-		centerX + size / 2, centerY + size / 2, 0, //triangle1
+		centerX - size / 2, centerY - size / 2, 0, mass, vx, vy,
+		centerX + size / 2, centerY - size / 2, 0, mass, vx, vy,
+		centerX + size / 2, centerY + size / 2, 0, mass, vx, vy,//triangle1
 
-		centerX - size / 2, centerY - size / 2, 0,
-		centerX + size / 2, centerY + size / 2, 0,
-		centerX - size / 2 , centerY + size / 2, 0 //triangle2
+		centerX - size / 2, centerY - size / 2, 0, mass, vx, vy,
+		centerX + size / 2, centerY + size / 2, 0, mass, vx, vy,
+		centerX - size / 2 , centerY + size / 2, 0, mass, vx, vy //triangle2
 	};
 
 	glGenBuffers(1, &m_VBOTriangle);
@@ -216,10 +219,45 @@ void Renderer::DrawTriangle()
 	glUniform1f(uTime, g_time);
 
 	int attribPosition = glGetAttribLocation(m_TriangleShader, "a_Position");
+	int attribMass = glGetAttribLocation(m_TriangleShader, "a_Mass");
+	int attribVel = glGetAttribLocation(m_TriangleShader, "a_Vel");
 	glEnableVertexAttribArray(attribPosition);
+	glEnableVertexAttribArray(attribMass);
+	glEnableVertexAttribArray(attribVel);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTriangle);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+	glVertexAttribPointer(attribMass, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(attribVel, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 4));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawParticle()
+{
+	g_time += 0.0001;
+
+	//Program select
+	glUseProgram(m_ParticleShader);
+
+	int uTime = glGetUniformLocation(m_ParticleShader, "u_Time");
+	glUniform1f(uTime, g_time);
+
+	int attribPosition = glGetAttribLocation(m_ParticleShader, "a_Position");
+	int attribMass = glGetAttribLocation(m_TriangleShader, "a_Mass");
+	int attribVel = glGetAttribLocation(m_TriangleShader, "a_Vel");
+	glEnableVertexAttribArray(attribPosition);
+	glEnableVertexAttribArray(attribMass);
+	glEnableVertexAttribArray(attribVel);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_ParticleShader);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+	glVertexAttribPointer(attribMass, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(attribVel, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 4));
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
