@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #include "Dependencies\glew.h"
 
@@ -17,6 +18,8 @@ public:
 	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void DrawTriangle();
 	void DrawParticle();
+
+	void AddParticle(float x, float y, float z, float mass, float vx, float vy);
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -39,5 +42,7 @@ private:
 
 	GLuint m_VBOParticle = 0;
 	GLuint m_ParticleShader = 0;
+	std::vector<float> m_Particles;
+	int m_ParticleCount = 0;
 };
 
