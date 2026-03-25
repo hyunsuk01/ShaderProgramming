@@ -19,7 +19,7 @@ public:
 	void DrawTriangle();
 	void DrawParticle();
 
-	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1);
+	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2);
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
