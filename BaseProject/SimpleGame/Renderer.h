@@ -18,6 +18,7 @@ public:
 	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void DrawTriangle();
 	void DrawParticle();
+	void DrawFS();
 
 	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2);
 
@@ -44,5 +45,9 @@ private:
 	GLuint m_ParticleShader = 0;
 	std::vector<float> m_Particles;
 	int m_ParticleCount = 0;
+
+	//FragmentShader
+	GLuint m_VBOFS = 0;
+	GLuint m_FSShader = 0;
 };
 
