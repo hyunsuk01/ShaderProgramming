@@ -25,6 +25,21 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	//Create VBOs
 	CreateVertexBufferObjects();
 
+	//Gen Drop Info
+	int index = 0;
+	for (int i = 0; i < 1000; i++)
+	{
+		float x = (float)rand() / (float)RAND_MAX;
+		float y = (float)rand() / (float)RAND_MAX;
+		float sTime = 3*(float)rand() / (float)RAND_MAX;
+		float lTime = (float)rand() / (float)RAND_MAX;
+
+		m_DropPoints[index] = x; index++;
+		m_DropPoints[index] = y; index++;
+		m_DropPoints[index] = sTime; index++;
+		m_DropPoints[index] = lTime; index++;
+	}
+
 	if (m_SolidRectShader > 0 && m_VBORect > 0)
 	{
 		m_Initialized = true;
@@ -307,6 +322,8 @@ void Renderer::DrawFS()
 
 	int uTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTime, g_time);
+	int uPoints = glGetUniformLocation(shader, "u_DropInfo");
+	glUniform4fv(uPoints, 1000, m_DropPoints);
 
 	int attribPosition = glGetAttribLocation(shader, "a_Pos");
 	int attribTPos = glGetAttribLocation(shader, "a_TPos");
