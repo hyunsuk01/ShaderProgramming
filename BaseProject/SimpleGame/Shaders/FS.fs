@@ -5,6 +5,7 @@ layout(location=0) out vec4 FragColor;
 in vec2 v_TPos;
 
 uniform float u_Time;
+uniform sampler2D u_RGBTex;
 
 const float c_PI = 3.141592;
 
@@ -212,7 +213,29 @@ void Flame()
 	FragColor = vec4(grey);
 }
 
+void TextureSampling()
+{
+	vec4 c0;
+	vec4 c1;
+	vec4 c2;
+	vec4 c3;
+	vec4 c4;
+
+	float offsetX = 0.01;
+	
+	c0 = texture(u_RGBTex, vec2(v_TPos.x - offsetX * 2, v_TPos.y));
+	c1 = texture(u_RGBTex, vec2(v_TPos.x - offsetX * 1, v_TPos.y));
+	c2 = texture(u_RGBTex, vec2(v_TPos.x - offsetX * 0, v_TPos.y));
+	c3 = texture(u_RGBTex, vec2(v_TPos.x + offsetX * 1, v_TPos.y));
+	c4 = texture(u_RGBTex, vec2(v_TPos.x + offsetX * 2, v_TPos.y));
+
+	vec4 sum = c0 + c1 + c2 + c3 + c4;
+	sum = sum / 5;
+
+	FragColor = sum;
+}
+
 void main()
 {
-	Flame();
+	TextureSampling();
 }

@@ -29,6 +29,7 @@ private:
 	GLuint CompileShaders(char* filenameVS, char* filenameFS);
 	void CreateVertexBufferObjects();
 	void GetGLPosition(float x, float y, float *newX, float *newY);
+	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
 
 	bool m_Initialized = false;
 	
@@ -52,5 +53,10 @@ private:
 
 	//RainDrops
 	float m_DropPoints[1000 * 4];
+
+	//Textures
+	GLuint m_RgbTexture = 0;
+	GLuint m_NumTexture[10];
+	GLuint m_NumsTexture = 0;
 };
 
