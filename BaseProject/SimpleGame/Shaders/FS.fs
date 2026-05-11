@@ -312,8 +312,54 @@ void Nums()
 	FragColor = texture(u_NumsTex, newTex);
 }
 
+void FS_01_Q6() //가로로 R,B,G 출력
+{
+	float tx = (fract(v_TPos.x*3));
+	float ty = (v_TPos.y/3);
+	float offsetX = 0;
+	float offsetY = (abs(floor(v_TPos.x * 3)/3-2));
+	FragColor = texture(u_RGBTex, vec2(tx + offsetX, ty + offsetY));
+}
+
+void FS_01_Q7() //세로로 G,B,R 출력
+{
+	float tx = (v_TPos.x);
+	float ty = (fract(v_TPos.y*3)/3);
+	float offsetX = 0;
+	float offsetY = ((floor(v_TPos.y*3)+1)/3);
+	FragColor = texture(u_RGBTex, vec2(tx + offsetX, ty + offsetY));
+}
+
+void FS_01_Q8() //7 출력
+{
+	float tx = (v_TPos.x/5.0);
+	float ty = (v_TPos.y/2.0);
+	float offsetX = (2.0/5.0);
+	float offsetY = (1.0/2.0);
+	FragColor = texture(u_NumsTex, vec2(tx + offsetX, ty + offsetY));
+}
+
+void FS_01_Q9() //가로로 2,3 출력
+{
+	float tx = (2.0*v_TPos.x/5.0);
+	float ty = (v_TPos.y/2.0);
+	float offsetX = (2.0/5.0);
+	float offsetY = (0.0);
+	FragColor = texture(u_NumsTex, vec2(tx + offsetX, ty + offsetY));
+}
+
+void FS_01_Q10() //offset에 index 사용하여 8 출력
+{
+	float index = float(8);
+	float tx = (v_TPos.x/5.0);
+	float ty = (v_TPos.y/2.0);
+	float offsetX = (fract(index / 5.0));
+	float offsetY = (floor(index / 5.0) / 2.0);
+	FragColor = texture(u_NumsTex, vec2(tx + offsetX, ty + offsetY));
+}
+
 void main()
 {
 	//TextureSampling();
-	Nums();
+	FS_01_Q10();
 }
