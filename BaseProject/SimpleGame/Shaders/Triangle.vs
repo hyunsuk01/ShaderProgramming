@@ -2,14 +2,18 @@
 
 uniform float u_Time;
 
-in vec3 a_Position;
+in vec3 a_Pos;
 in float a_Mass;
 in vec2 a_Vel;
 in float a_RV;
 in float a_RV1;
 in float a_RV2;
+in vec2 a_Tex;
+in vec3 a_RGB;
 
 out float v_Grey;
+out vec3 v_Color;
+out vec2 v_Tex;
 
 const float c_PI = 3.141592;
 const float c_G = -9.8;
@@ -25,8 +29,8 @@ void Sin0()
 		float amp = (1 - t) * 0.2 * (a_RV - 0.5) * 2; // t or (1 - t)
 		float period = a_RV1;
 		vec4 newPosition;
-		newPosition.x = a_Position.x * a_RV2 * 0.2 + t;
-		newPosition.y = a_Position.y * a_RV2 * 0.2 + sin(t * c_PI * 2 * period) * amp;
+		newPosition.x = a_Pos.x * a_RV2 * 0.2 + t;
+		newPosition.y = a_Pos.y * a_RV2 * 0.2 + sin(t * c_PI * 2 * period) * amp;
 		newPosition.z = 0;
 		newPosition.w = 1.0;
 	
@@ -72,8 +76,8 @@ void Sin00()
         float scale = (1.0 - t) * (0.5 + a_RV2);
 
         vec4 newPosition;
-        newPosition.x = a_Position.x * scale + baseX + rx;
-        newPosition.y = a_Position.y * scale + ry + noise;
+        newPosition.x = a_Pos.x * scale + baseX + rx;
+        newPosition.y = a_Pos.y * scale + ry + noise;
         newPosition.z = 0;
         newPosition.w = 1.0;
 
@@ -106,8 +110,8 @@ void Sin01()
         float scale = t * (0.5 + a_RV2);
 
         vec4 newPosition;
-        newPosition.x = a_Position.x * scale + cx + noiseX;
-        newPosition.y = a_Position.y * scale + cy + noiseY;
+        newPosition.x = a_Pos.x * scale + cx + noiseX;
+        newPosition.y = a_Pos.y * scale + cy + noiseY;
         newPosition.z = 0;
         newPosition.w = 1.0;
 
@@ -144,8 +148,8 @@ void Sin02()
         float scale = (1.0 - t) * 0.5;
 
         vec4 newPosition;
-        newPosition.x = a_Position.x * scale + moveX + jitter;
-        newPosition.y = a_Position.y * scale + moveY + gravity;
+        newPosition.x = a_Pos.x * scale + moveX + jitter;
+        newPosition.y = a_Pos.y * scale + moveY + gravity;
         newPosition.z = 0;
         newPosition.w = 1.0;
 
@@ -162,8 +166,8 @@ void Sin1()
 {
 	float t = u_Time;
 	vec4 newPosition;
-	newPosition.x = a_Position.x + t;
-	newPosition.y = a_Position.y + sin(t * 3.141592 * 2) * 0.5;
+	newPosition.x = a_Pos.x + t;
+	newPosition.y = a_Pos.y + sin(t * 3.141592 * 2) * 0.5;
 	newPosition.z = 0;
 	newPosition.w = 1.0;
 	
@@ -174,8 +178,8 @@ void Sin2()
 {
 	float t = u_Time;
 	vec4 newPosition;
-	newPosition.x = a_Position.x + t - 1;
-	newPosition.y = a_Position.y + sin(t * 3.141592) * 0.5;
+	newPosition.x = a_Pos.x + t - 1;
+	newPosition.y = a_Pos.y + sin(t * 3.141592) * 0.5;
 	newPosition.z = 0;
 	newPosition.w = 1.0;
 	
@@ -187,8 +191,8 @@ void Circle()
 {
 	float t = u_Time;
 	vec4 newPosition;
-	newPosition.x = a_Position.x - cos(t * 2 * 3.141592);
-	newPosition.y = a_Position.y + sin(t * 2 * 3.141592);
+	newPosition.x = a_Pos.x - cos(t * 2 * 3.141592);
+	newPosition.y = a_Pos.y + sin(t * 2 * 3.141592);
 	newPosition.z = 0;
 	newPosition.w = 1.0;
 	
@@ -201,8 +205,8 @@ void Lissajous()
 
 	vec4 newPosition;
 
-	newPosition.x = a_Position.x + sin(t * 2 * 3.141592) * 0.3;
-	newPosition.y = a_Position.y + sin(t * 3 * 3.141592) * 0.3;
+	newPosition.x = a_Pos.x + sin(t * 2 * 3.141592) * 0.3;
+	newPosition.y = a_Pos.y + sin(t * 3 * 3.141592) * 0.3;
 
 	newPosition.z = 0;
 	newPosition.w = 1.0;
@@ -216,8 +220,8 @@ void PrettyMove()
 
 	vec4 newPosition;
 
-	newPosition.x = a_Position.x + sin(t * 3.141592) * 0.7 + sin(t * 3) * 0.2;
-	newPosition.y = a_Position.y + cos(t * 2 * 3.141592) * 0.5;
+	newPosition.x = a_Pos.x + sin(t * 3.141592) * 0.7 + sin(t * 3) * 0.2;
+	newPosition.y = a_Pos.y + cos(t * 2 * 3.141592) * 0.5;
 
 	newPosition.z = 0;
 	newPosition.w = 1.0;
@@ -232,8 +236,8 @@ void Spiral()
 
 	vec4 newPosition;
 
-	newPosition.x = a_Position.x + r * cos(t * 3.141592);
-	newPosition.y = a_Position.y + r * sin(t * 3.141592);
+	newPosition.x = a_Pos.x + r * cos(t * 3.141592);
+	newPosition.y = a_Pos.y + r * sin(t * 3.141592);
 
 	newPosition.z = 0;
 	newPosition.w = 1.0;
@@ -264,8 +268,8 @@ void Falling()
 		vx = a_Vel.x/30;
 		vy = a_Vel.y/30;
 	
-		sx = a_Position.x * random(a_RV1) + sin(a_RV*2*c_PI);
-		sy = a_Position.y * random(a_RV1) + cos(a_RV*2*c_PI);
+		sx = a_Pos.x * random(a_RV1) + sin(a_RV*2*c_PI);
+		sy = a_Pos.y * random(a_RV1) + cos(a_RV*2*c_PI);
 
 		vec4 newPos;
 		newPos.x = sx + vx*t;
@@ -316,8 +320,8 @@ void Falling1()
         float scale = (1.0 - t) * (0.5 + random(a_RV1));
 
         vec2 local;
-        local.x = a_Position.x * scale;
-        local.y = a_Position.y * scale;
+        local.x = a_Pos.x * scale;
+        local.y = a_Pos.y * scale;
 
         vec2 rotated;
         rotated.x = local.x * cosA - local.y * sinA;
@@ -340,7 +344,36 @@ void Falling1()
     }
 }
 
+void Shape()
+{
+    float lifeTime = 0.5 + 5.0 * a_RV;
+    float startTime = 5.0 * a_RV1;
+    
+    float newTime = u_Time - startTime;
+    if(newTime >0)
+    {
+        float t = fract(newTime/lifeTime) * lifeTime;
+        float tt = t*t;
+
+        float newX = a_Pos.x + a_Vel.x * t*0.1;
+        float newY = a_Pos.y + a_Vel.y * t*0.1;
+
+        gl_Position = vec4(newX, newY, 0, 1);
+        v_Grey = 1 - fract(newTime/lifeTime);
+    }
+    else
+    {
+        gl_Position = vec4(-10000, 0, 0, 1);
+        v_Grey = 1;
+        
+    }
+    
+    
+    v_Color = a_RGB;
+    v_Tex = a_Tex;
+}
+
 void main()
 {
-	Sin0();
+	Shape();
 }

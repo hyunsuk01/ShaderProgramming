@@ -20,7 +20,7 @@ public:
 	void DrawParticle();
 	void DrawFS();
 
-	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2);
+	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2, float R, float G, float B);
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -58,5 +58,7 @@ private:
 	GLuint m_RgbTexture = 0;
 	GLuint m_NumTexture[10];
 	GLuint m_NumsTexture = 0;
+	GLuint m_ParticleTexture = 0;
+	GLuint m_ParticleSpriteTexture = 0;
 };
 
