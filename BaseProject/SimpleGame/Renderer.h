@@ -17,10 +17,7 @@ public:
 	bool IsInitialized();
 	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void DrawTriangle();
-	void DrawParticle();
 	void DrawFS();
-
-	void AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2, float R, float G, float B);
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -29,6 +26,7 @@ private:
 	GLuint CompileShaders(char* filenameVS, char* filenameFS);
 	void CreateVertexBufferObjects();
 	void GetGLPosition(float x, float y, float *newX, float *newY);
+	void GenParticles(int count);
 	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
 
 	bool m_Initialized = false;
@@ -41,11 +39,9 @@ private:
 
 	GLuint m_VBOTriangle = 0;
 	GLuint m_TriangleShader = 0;
-
+	
 	GLuint m_VBOParticle = 0;
-	GLuint m_ParticleShader = 0;
-	std::vector<float> m_Particles;
-	int m_ParticleCount = 0;
+	int m_VBOParticleCount = 0;
 
 	//FragmentShader
 	GLuint m_VBOFS = 0;

@@ -16,28 +16,39 @@ Renderer::~Renderer()
 
 void Renderer::Initialize(int windowSizeX, int windowSizeY)
 {
+	std::srand((unsigned int)std::time(nullptr));
+
 	//Set window size
 	m_WindowSizeX = windowSizeX;
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
-	m_TriangleShader = CompileShaders("./Shaders/Triangle.vs", "./Shaders/Triangle.fs");
-	m_FSShader = CompileShaders("./Shaders/FS.vs", "./Shaders/FS.fs");
-	
+	m_SolidRectShader = CompileShaders(
+		"./Shaders/SolidRect.vs", 
+		"./Shaders/SolidRect.fs");
+	m_TriangleShader = CompileShaders(
+		"./Shaders/Triangle.vs",
+		"./Shaders/Triangle.fs");
+	m_FSShader = CompileShaders(
+		"./Shaders/FS.vs",
+		"./Shaders/FS.fs");
+
 	//Load Textures
 	m_RgbTexture = CreatePngTexture("./textures/rgb.png", GL_NEAREST); //0 slot
-	m_NumsTexture = CreatePngTexture("./textures/numbers.png", GL_NEAREST); //1 slot
-	m_ParticleTexture = CreatePngTexture("./textures/particle.png", GL_NEAREST);
-	m_ParticleSpriteTexture = CreatePngTexture("./textures/particle.png", GL_NEAREST);
+	m_NumsTexture = CreatePngTexture("./textures/numbers.png", GL_NEAREST); //1slot
+	m_ParticleTexture = CreatePngTexture("./textures/particle.png", GL_NEAREST); 
+	m_ParticleSpriteTexture = CreatePngTexture("./textures/explosion.png", GL_NEAREST);
+
 	for (int i = 0; i < 10; i++)
 	{
 		std::string path = "./textures/" + std::to_string(i) + ".png";
-		m_NumTexture[i] = CreatePngTexture((char*)path.c_str(), GL_NEAREST); //2~11 slot
+		m_NumTexture[i] = CreatePngTexture((char*)path.c_str(), GL_NEAREST); //2~11slot
 	}
 
 	//Create VBOs
 	CreateVertexBufferObjects();
+
+	GenParticles(1000);
 
 	//Gen Drop Info
 	int index = 0;
@@ -65,70 +76,6 @@ bool Renderer::IsInitialized()
 	return m_Initialized;
 }
 
-GLuint Renderer::CreatePngTexture(char* filePath, GLuint samplingMethod)
-
-{
-
-	//Load Png
-
-	std::vector<unsigned char> image;
-
-	unsigned width, height;
-
-	unsigned error = lodepng::decode(image, width, height, filePath);
-
-	if (error != 0)
-
-	{
-
-		std::cout << "PNG image loading failed:" << filePath << std::endl;
-
-		assert(0);
-
-	}
-
-
-
-	GLuint temp;
-
-	glGenTextures(1, &temp);
-
-	glBindTexture(GL_TEXTURE_2D, temp);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-
-		GL_UNSIGNED_BYTE, &image[0]);
-
-
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, samplingMethod);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, samplingMethod);
-
-
-
-	return temp;
-
-}
-
-void Renderer::AddParticle(float x, float y, float z, float mass, float vx, float vy, float RV, float RV1, float RV2, float R, float G, float B)
-{
-	float size = 0.04f;
-
-	float quad[] =
-	{
-		x - size, y - size, z, mass, vx, vy, RV, RV1, RV2, 0.f, 1.f, R, G, B,
-		x + size, y - size, z, mass, vx, vy, RV, RV1, RV2, 1.f, 1.f, R, G, B,
-		x + size, y + size, z, mass, vx, vy, RV, RV1, RV2, 1.f, 0.f, R, G, B,
-		
-		x - size, y - size, z, mass, vx, vy, RV, RV1, RV2, 0.f, 1.f, R, G, B,
-		x + size, y + size, z, mass, vx, vy, RV, RV1, RV2, 1.f, 0.f, R, G, B,
-		x - size, y + size, z, mass, vx, vy, RV, RV1, RV2, 0.f, 0.f, R, G, B
-	};
-
-	m_Particles.insert(m_Particles.end(), quad, quad + 84);
-}
-
 void Renderer::CreateVertexBufferObjects()
 {
 	float rect[]
@@ -142,71 +89,243 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 
+
 	float centerX = 0;
 	float centerY = 0;
 	float size = 0.1;
 	float mass = 1;
-	float vx = 0.5;
-	float vy = 1;
+	float vx = 1;
+	float vy = 3;
 	float triangle[]
 		=
 	{
-		centerX - size / 2, centerY - size / 2, 0, mass, vx, vy,
-		centerX + size / 2, centerY - size / 2, 0, mass, vx, vy,
-		centerX + size / 2, centerY + size / 2, 0, mass, vx, vy,//triangle1
+		centerX - size / 2, centerY - size / 2, 0, 
+		mass, vx, vy,
+		centerX + size / 2, centerY - size / 2, 0, 
+		mass, vx, vy,
+		centerX + size / 2, centerY + size / 2, 0, 
+		mass, vx, vy,//triangle1
 
-		centerX - size / 2, centerY - size / 2, 0, mass, vx, vy,
-		centerX + size / 2, centerY + size / 2, 0, mass, vx, vy,
-		centerX - size / 2 , centerY + size / 2, 0, mass, vx, vy //triangle2
+		centerX - size / 2, centerY - size / 2, 0, 
+		mass, vx, vy,
+		centerX + size / 2, centerY + size / 2, 0, 
+		mass, vx, vy,
+		centerX - size / 2, centerY + size / 2, 0, 
+		mass, vx, vy//triangle2
 	};
-
 	glGenBuffers(1, &m_VBOTriangle);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTriangle);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle,
 		GL_STATIC_DRAW);
 
-	for (int i = 0; i < 1000; i++)
-	{
-		float angle = ((rand() % 1000) / 1000.0f) * 2 * 3.141592;
-		float speed = ((rand() % 1000) / 1000.0f) * 1.5f;
 
-		float vx = cos(angle) * speed;
-		float vy = sin(angle) * speed;
-
-		float RV = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		float RV1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		float RV2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		float R = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		float G = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		float B = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-
-		AddParticle(0, 0, 0, 1, vx, vy, RV, RV1, RV2, R, G, B);
-	}
-
-	m_ParticleCount = m_Particles.size() / 84;
-
-	glGenBuffers(1, &m_VBOParticle);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticle);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_Particles.size() * sizeof(float),
-		m_Particles.data(),
-		GL_STATIC_DRAW);
-
-	float rectFS[]  // x, y, , tx, ty : stride 5
+	float rectFS[] //x, y, z, tx, ty : stride 5
 		=
 	{
 		-1.f, -1.f, 0.f, 0, 1,
 		 1.f,  1.f, 0.f, 1, 0,
-		-1.f,  1.f, 0.f, 0, 0, // Triangle1
+		-1.f,  1.f, 0.f, 0, 0,//Triangle1
 
 		-1.f, -1.f, 0.f, 0, 1,
-		 1.f, -1.f, 0.f, 1, 1,
-		 1.f,  1.f, 0.f, 1, 0 // Triangle2
+		 1.f, -1.f, 0.f, 1, 1, 
+		 1.f,  1.f, 0.f, 1, 0//Triangle2
 	};
 
 	glGenBuffers(1, &m_VBOFS);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFS);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rectFS), rectFS, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectFS), 
+		rectFS, GL_STATIC_DRAW);
+
+
+}
+
+GLuint Renderer::CreatePngTexture(char* filePath, GLuint samplingMethod)
+
+{
+	//Load Png
+	std::vector<unsigned char> image;
+	unsigned width, height;
+	unsigned error = lodepng::decode(image, width, height, filePath);
+
+	if (error != 0)
+	{
+		std::cout << "PNG image loading failed:" << filePath << std::endl;
+		assert(0);
+	}
+
+	GLuint temp;
+
+	glGenTextures(1, &temp);
+	glBindTexture(GL_TEXTURE_2D, temp);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+		GL_UNSIGNED_BYTE, &image[0]);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, samplingMethod);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, samplingMethod);
+
+	return temp;
+
+}
+
+void Renderer::GenParticles(int count)
+{
+	if (count <= 0)
+	{
+		m_VBOParticleCount = 0;
+		return;
+	}
+
+	const float size = 0.1f;
+	const float mass = 1.0f;
+
+	// 파티클 1개 = 정점 6개
+	// 정점 1개 = x, y, z, mass, vx, vy, RV, RV1, RV2, tx, ty, r, g, b  -> 총 11개 float
+	const int floatsPerVertex = 14;
+	const int verticesPerParticle = 6;
+	const int floatsPerParticle 
+		= floatsPerVertex * verticesPerParticle;
+
+	std::vector<float> particles;
+	particles.reserve(count * floatsPerParticle);
+
+	for (int i = 0; i < count; ++i)
+	{
+		// 중심 위치도 랜덤으로 주고 싶다면 여기서 바꿔도 됨
+		float centerX = 0.0f;
+		float centerY = 0.0f;
+
+		// vx, vy 랜덤값 부여
+		// 예: -3.0 ~ 3.0 범위
+		float vx = -3.0f + static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * 6.0f;
+		float vy = -3.0f + static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) * 6.0f;
+
+		float RV = static_cast<float>(std::rand()) 
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+		float RV1 = static_cast<float>(std::rand())
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+		float RV2 = static_cast<float>(std::rand())
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+
+		float R = static_cast<float>(std::rand())
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+		float G = static_cast<float>(std::rand())
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+		float B = static_cast<float>(std::rand())
+			/ static_cast<float>(RAND_MAX); //0~1 random value
+
+		float left = centerX - size / 2.0f;
+		float right = centerX + size / 2.0f;
+		float bottom = centerY - size / 2.0f;
+		float top = centerY + size / 2.0f;
+
+		// triangle 1
+		particles.push_back(left);  
+		particles.push_back(bottom); 
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(0.f);
+		particles.push_back(1.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+
+		particles.push_back(right); 
+		particles.push_back(bottom); 
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(1.f);
+		particles.push_back(1.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+
+		particles.push_back(right); 
+		particles.push_back(top);    
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(1.f);
+		particles.push_back(0.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+
+		// triangle 2
+		particles.push_back(left);  
+		particles.push_back(bottom); 
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(0.f);
+		particles.push_back(1.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+
+		particles.push_back(right); 
+		particles.push_back(top);    
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(1.f);
+		particles.push_back(0.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+
+		particles.push_back(left);  
+		particles.push_back(top);    
+		particles.push_back(0.0f);
+		particles.push_back(mass);  
+		particles.push_back(vx);     
+		particles.push_back(vy);
+		particles.push_back(RV);
+		particles.push_back(RV1);
+		particles.push_back(RV2);
+		particles.push_back(0.f);
+		particles.push_back(0.f);
+		particles.push_back(R);
+		particles.push_back(G);
+		particles.push_back(B);
+	}
+
+	if (m_VBOParticle == 0)
+	{
+		glGenBuffers(1, &m_VBOParticle);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticle);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sizeof(float) * particles.size(),
+		particles.data(),
+		GL_STATIC_DRAW
+	);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// 전체 생성된 버텍스 개수 저장
+	m_VBOParticleCount = count * verticesPerParticle;
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -331,7 +450,7 @@ void Renderer::DrawSolidRect(float x, float y, float z, float size, float r, flo
 	glUniform4f(glGetUniformLocation(m_SolidRectShader, "u_Trans"), newX, newY, 0, size);
 	glUniform4f(glGetUniformLocation(m_SolidRectShader, "u_Color"), r, g, b, a);
 
-	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Pos");
+	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
@@ -347,57 +466,130 @@ float g_time = 0;
 
 void Renderer::DrawTriangle()
 {
-	g_time += 0.0001;
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	g_time += 0.016;
 
 	//Program select
 	glUseProgram(m_TriangleShader);
 
-	int uTime = glGetUniformLocation(m_TriangleShader, "u_Time");
+	int uTime = glGetUniformLocation(
+		m_TriangleShader, "u_Time"); 
 	glUniform1f(uTime, g_time);
+	int uParticle = glGetUniformLocation(
+		m_TriangleShader, "u_ParticleTex");
+	glUniform1i(uParticle, 0);
+	int uParticleSprite = glGetUniformLocation(
+		m_TriangleShader, "u_ParticleSpriteTex");
+	glUniform1i(uParticleSprite, 1);
 
-	int attribPosition = glGetAttribLocation(m_TriangleShader, "a_Pos");
-	int attribMass = glGetAttribLocation(m_TriangleShader, "a_Mass");
-	int attribVel = glGetAttribLocation(m_TriangleShader, "a_Vel");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_ParticleTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_ParticleSpriteTexture);
 
+	int attribPosition = glGetAttribLocation(
+		m_TriangleShader, "a_Pos");
+	int attribMass = glGetAttribLocation(
+		m_TriangleShader, "a_Mass");
+	int attribVel = glGetAttribLocation(
+		m_TriangleShader, "a_Vel");
+	int attribRV = glGetAttribLocation(
+		m_TriangleShader, "a_RV");
+	int attribRV1 = glGetAttribLocation(
+		m_TriangleShader, "a_RV1");
+	int attribRV2 = glGetAttribLocation(
+		m_TriangleShader, "a_RV2");
+	int attribTex = glGetAttribLocation(
+		m_TriangleShader, "a_Tex");
+	int attribRGB = glGetAttribLocation(
+		m_TriangleShader, "a_RGB");
 	glEnableVertexAttribArray(attribPosition);
 	glEnableVertexAttribArray(attribMass);
 	glEnableVertexAttribArray(attribVel);
+	glEnableVertexAttribArray(attribRV);
+	glEnableVertexAttribArray(attribRV1);
+	glEnableVertexAttribArray(attribRV2);
+	glEnableVertexAttribArray(attribTex);
+	glEnableVertexAttribArray(attribRGB);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTriangle);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
-	glVertexAttribPointer(attribMass, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 3));
-	glVertexAttribPointer(attribVel, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (GLvoid*)(sizeof(float) * 4));
+	int stride = 14;
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticle);
+	glVertexAttribPointer(attribPosition, 
+		3, GL_FLOAT, 
+		GL_FALSE, 
+		sizeof(float) * stride, 0);
+	glVertexAttribPointer(attribMass,
+		1, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(attribVel,
+		2, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 4));
+	glVertexAttribPointer(attribRV,
+		1, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 6));
+	glVertexAttribPointer(attribRV1,
+		1, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 7));
+	glVertexAttribPointer(attribRV2,
+		1, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 8));
+	glVertexAttribPointer(attribTex,
+		2, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 9));
+	glVertexAttribPointer(attribRGB,
+		3, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * stride, (GLvoid*)(sizeof(float) * 11));
 
-	glDisableVertexAttribArray(attribPosition);
+	glDrawArrays(GL_TRIANGLES, 0, m_VBOParticleCount);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_BLEND);
 }
 
 int g_CurrNum = 0;
 
 void Renderer::DrawFS()
 {
-	g_time += 0.0001;
+	g_time += 0.016;
 
 	//Program select
 	GLuint shader = m_FSShader;
 	glUseProgram(shader);
-	int uTime = glGetUniformLocation(shader, "u_Time");
+
+	int uTime = glGetUniformLocation(
+		shader, "u_Time");
 	glUniform1f(uTime, g_time);
-	int uRGBTexture = glGetUniformLocation(shader, "u_RGBTex");
+
+	int uPoints = glGetUniformLocation(
+		shader, "u_DropInfo");
+	glUniform4fv(uPoints, 1000, m_DropPoints);
+
+	int uRGBTexture = glGetUniformLocation(shader,
+		"u_RGBTex");
 	glUniform1i(uRGBTexture, 0);
-	int uCurrNumTexture = glGetUniformLocation(shader, "u_CurrNumTex");
+
+	int uCurrNumTexture = glGetUniformLocation(shader,
+		"u_CurrNumTex");
 	glUniform1i(uCurrNumTexture, g_CurrNum+2);
 	g_CurrNum++;
-	if(g_CurrNum > 9)
+	if (g_CurrNum > 9)
 		g_CurrNum = 0;
 	Sleep(500);
 
-	int uInputNum = glGetUniformLocation(shader, "u_InputNum");
-	glUniform1i(uInputNum, g_CurrNum);
-	int uNumsTexture = glGetUniformLocation(shader, "u_NumsTex");
+	int uInputNum = glGetUniformLocation(shader,
+		"u_InputNum");
+	glUniform1i(uInputNum, 9);
+
+	int uNumsTexture = glGetUniformLocation(shader,
+		"u_NumsTex");
 	glUniform1i(uNumsTexture, 1);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -427,79 +619,23 @@ void Renderer::DrawFS()
 	glActiveTexture(GL_TEXTURE11);
 	glBindTexture(GL_TEXTURE_2D, m_NumTexture[9]);
 
-	int uPoints = glGetUniformLocation(shader, "u_DropInfo");
-	glUniform4fv(uPoints, 1000, m_DropPoints);
-
-	int attribPosition = glGetAttribLocation(shader, "a_Pos");
-	int attribTPos = glGetAttribLocation(shader, "a_TPos");
+	int attribPosition = glGetAttribLocation(
+		shader, "a_Pos");
+	int attribTex =	glGetAttribLocation(
+		shader, "a_Tex");
 	glEnableVertexAttribArray(attribPosition);
-	glEnableVertexAttribArray(attribTPos);
+	glEnableVertexAttribArray(attribTex);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFS);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
-	glVertexAttribPointer(attribTPos, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float)*3));
-
+	glVertexAttribPointer(attribPosition,
+		3, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * 5, 0);
+	glVertexAttribPointer(attribTex,
+		2, GL_FLOAT,
+		GL_FALSE,
+		sizeof(float) * 5, (GLvoid*)(sizeof(float)*3));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-
-void Renderer::DrawParticle()
-{
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	static float g_time = 0;
-	g_time += 0.0001f;
-
-	glUseProgram(m_TriangleShader);
-
-	int uTime = glGetUniformLocation(m_TriangleShader, "u_Time");
-	glUniform1f(uTime, g_time);
-	int uParticle = glGetUniformLocation(m_TriangleShader, "u_ParticleTex");
-	glUniform1i(uParticle, 0);
-	int uParticleSprite = glGetUniformLocation(m_TriangleShader, "u_ParticleSpriteTex");
-	glUniform1i(uParticleSprite, 1);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_ParticleTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_ParticleSpriteTexture);
-
-	int attribPosition = glGetAttribLocation(m_TriangleShader, "a_Pos");
-	int attribMass = glGetAttribLocation(m_TriangleShader, "a_Mass");
-	int attribVel = glGetAttribLocation(m_TriangleShader, "a_Vel");
-	int attribRV = glGetAttribLocation(m_TriangleShader, "a_RV");
-	int attribRV1 = glGetAttribLocation(m_TriangleShader, "a_RV1");
-	int attribRV2 = glGetAttribLocation(m_TriangleShader, "a_RV2");
-	int attribTex = glGetAttribLocation(m_TriangleShader, "a_Tex");
-	int attribRGB = glGetAttribLocation(m_TriangleShader, "a_RGB");
-
-	glEnableVertexAttribArray(attribPosition);
-	glEnableVertexAttribArray(attribMass);
-	glEnableVertexAttribArray(attribVel);
-	glEnableVertexAttribArray(attribRV);
-	glEnableVertexAttribArray(attribRV1);
-	glEnableVertexAttribArray(attribRV2);
-	glEnableVertexAttribArray(attribTex);
-	glEnableVertexAttribArray(attribRGB);
-
-	int stride = 14;
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOParticle);
-
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * stride, 0);
-	glVertexAttribPointer(attribMass, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 3));
-	glVertexAttribPointer(attribVel, 2, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 4));
-	glVertexAttribPointer(attribRV, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 6));
-	glVertexAttribPointer(attribRV1, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 7));
-	glVertexAttribPointer(attribRV2, 1, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 8));
-	glVertexAttribPointer(attribTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 9));
-	glVertexAttribPointer(attribRGB, 3, GL_FLOAT, GL_FALSE, sizeof(float) * stride, (GLvoid*)(sizeof(float) * 11));
-
-	glDrawArrays(GL_TRIANGLES, 0, m_ParticleCount * 6);
-
-	glDisableVertexAttribArray(attribPosition);
-
-	glDisable(GL_BLEND);
 }
 
 void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)

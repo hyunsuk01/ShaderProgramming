@@ -29,8 +29,8 @@ void SingleTexture()
 
 void AnimTexture()
 {
-	float resolX = 5.0;
-	float resolY = 4.0;
+	float resolX = 9.0;
+	float resolY = 9.0;
 	float index = floor((1.0 - v_Grey) * (resolX * resolY-1));
 	float tx = v_Tex.x / resolX;
 	float ty = v_Tex.y / resolY;
