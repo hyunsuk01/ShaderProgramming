@@ -11,6 +11,10 @@
       "RelativeMoniker": "D:0:0:{25179D6C-FA85-4619-8EDB-AC241382F6CA}|SimpleGame\\SimpleGame.vcxproj|solutionrelative:SimpleGame\\Renderer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{25179D6C-FA85-4619-8EDB-AC241382F6CA}|SimpleGame\\SimpleGame.vcxproj|C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\FS.fs||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{25179D6C-FA85-4619-8EDB-AC241382F6CA}|SimpleGame\\SimpleGame.vcxproj|solutionrelative:SimpleGame\\Shaders\\FS.fs||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{25179D6C-FA85-4619-8EDB-AC241382F6CA}|SimpleGame\\SimpleGame.vcxproj|C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.fs||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{25179D6C-FA85-4619-8EDB-AC241382F6CA}|SimpleGame\\SimpleGame.vcxproj|solutionrelative:SimpleGame\\Shaders\\Dummy.fs||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -30,24 +34,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Dummy.fs",
-              "DocumentMoniker": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.fs",
-              "RelativeDocumentMoniker": "SimpleGame\\Shaders\\Dummy.fs",
-              "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.fs",
-              "RelativeToolTip": "SimpleGame\\Shaders\\Dummy.fs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-05-18T04:50:14.629Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -57,9 +48,22 @@
               "RelativeDocumentMoniker": "SimpleGame\\Shaders\\Dummy.vs",
               "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.vs",
               "RelativeToolTip": "SimpleGame\\Shaders\\Dummy.vs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAALAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAmwDUAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2026-05-18T04:50:16.08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FS.fs",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\FS.fs",
+              "RelativeDocumentMoniker": "SimpleGame\\Shaders\\FS.fs",
+              "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\FS.fs",
+              "RelativeToolTip": "SimpleGame\\Shaders\\FS.fs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-31T15:43:18.43Z",
               "EditorCaption": ""
             },
             {
@@ -70,33 +74,46 @@
               "RelativeDocumentMoniker": "SimpleGame\\Renderer.cpp",
               "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Renderer.cpp",
               "RelativeToolTip": "SimpleGame\\Renderer.cpp",
-              "ViewState": "AgIAANUCAAAAAAAAAAAQwOcCAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAAwDcAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-03-09T04:10:36.942Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
+              "Title": "Dummy.fs",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.fs",
+              "RelativeDocumentMoniker": "SimpleGame\\Shaders\\Dummy.fs",
+              "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Shaders\\Dummy.fs",
+              "RelativeToolTip": "SimpleGame\\Shaders\\Dummy.fs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-18T04:50:14.629Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "Renderer.h",
               "DocumentMoniker": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Renderer.h",
               "RelativeDocumentMoniker": "SimpleGame\\Renderer.h",
               "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\Renderer.h",
               "RelativeToolTip": "SimpleGame\\Renderer.h",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAEEAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADsAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-05-17T16:41:21.043Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "SimpleGame.cpp",
               "DocumentMoniker": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\SimpleGame.cpp",
               "RelativeDocumentMoniker": "SimpleGame\\SimpleGame.cpp",
               "ToolTip": "C:\\Users\\USER\\Documents\\GitHub\\spgp\\ShaderProgramming\\BaseProject\\SimpleGame\\SimpleGame.cpp",
               "RelativeToolTip": "SimpleGame\\SimpleGame.cpp",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAADAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-03-09T04:10:45.128Z",
               "EditorCaption": ""

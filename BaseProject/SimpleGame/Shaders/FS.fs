@@ -361,5 +361,5 @@ void FS_01_Q10() //offset에 index 사용하여 8 출력
 void main()
 {
 	//TextureSampling();
-	FS_01_Q10();
+	RainDrop();
 }

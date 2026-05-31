@@ -41,6 +41,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_NumsTexture = CreatePngTexture("./textures/numbers.png", GL_NEAREST); //1slot
 	m_ParticleTexture = CreatePngTexture("./textures/particle.png", GL_NEAREST); 
 	m_ParticleSpriteTexture = CreatePngTexture("./textures/explosion.png", GL_NEAREST);
+	m_HykTexture = CreatePngTexture("./textures/hyk.png", GL_NEAREST);
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -52,7 +53,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	CreateVertexBufferObjects();
 
 	//Create Dummy
-	GenDummyMesh(16, 16);
+	GenDummyMesh(100, 100);
 
 	GenParticles(1000);
 
@@ -732,6 +733,15 @@ void Renderer::DrawDummy()
 	int uTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTime, g_time);
 	g_time += 0.00016;
+
+	int uHykTex = glGetUniformLocation(shader, "u_HykTex");
+	glUniform1i(uHykTex, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_HykTexture);
+
+	int uPoints = glGetUniformLocation(
+		shader, "u_DropInfo");
+	glUniform4fv(uPoints, 1000, m_DropPoints);
 
 	int attribPosition = glGetAttribLocation(m_DummyShader, "a_Pos");
 	glEnableVertexAttribArray(attribPosition);
